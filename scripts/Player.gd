@@ -9,31 +9,34 @@ var fire_cooldown = 500
 
 func _physics_process(delta):
 	var direction = 0.0
-	
-	# Keyboard Input
+
+	# 1. Keyboard Input (Prioritized)
 	if Input.is_action_pressed("move_left"):
 		direction -= 1.0
-	if Input.is_action_pressed("move_right"):
+	elif Input.is_action_pressed("move_right"):
 		direction += 1.0
-		
-	# Joystick Input (from Pico W)
-	if GameInput.connected:
-		# Assume X axis 0.0-0.4 = left, 0.6-1.0 = right, 0.5 = center
-		if GameInput.joystick_x < 0.4:
-			direction -= 1.0
-		elif GameInput.joystick_x > 0.6:
-			direction += 1.0
-			
-		# Fire Button (Using milliseconds for cooldown)
-		if GameInput.button_pressed and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
-			fire_bullet()
-			last_fire_time = Time.get_ticks_msec()
+	else:
+		# 2. Joystick Input (Only used if NO keyboard keys are pressed)
+		if GameInput.connected:
+			if GameInput.joystick_x < 0.4:
+				direction -= 1.0
+			elif GameInput.joystick_x > 0.6:
+				direction += 1.0
+
+	# 3. Fire Button (Keyboard OR Joystick)
+	var should_fire = GameInput.button_pressed or Input.is_action_just_pressed("fire")
+	if should_fire and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
+		fire_bullet()
+		last_fire_time = Time.get_ticks_msec()
 
 	velocity.x = direction * speed
 	move_and_slide()
 
-	# Keep player within screen bounds
-	position.x = clamp(position.x, 0, get_viewport_rect().size.x)
+	# 4. Keep player within screen bounds (Fixed to account for sprite width)
+	# This stops the exact edge of the ship from touching the wall, rather than the center of the ship
+	var half_width = $Sprite2D.texture.get_width() / 2.0
+	var screen_width = get_viewport_rect().size.x
+	position.x = clamp(position.x, half_width, screen_width - half_width)
 
 func fire_bullet():
 	if bullet_scene:
