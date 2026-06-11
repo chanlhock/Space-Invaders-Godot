@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://c6fdsu3cf0xgx"]
+
+[ext_resource type="Script" uid="uid://c35m354b70lqa" path="res://scripts/Main.gd" id="1_03owx"]
+[ext_resource type="PackedScene" uid="uid://bbnqpblkpx003" path="res://Invader.tscn" id="2_lgr22"]
+[ext_resource type="PackedScene" uid="uid://dm47upnxmwerj" path="res://Bullet.tscn" id="4_trn2v"]
+[ext_resource type="Script" uid="uid://00vteeisysf7" path="res://scripts/Player.gd" id="5_c6i3y"]
+[ext_resource type="AudioStream" uid="uid://brieladcg74m1" path="res://sounds/bullet.mp3" id="6_c2ibq"]
+[ext_resource type="Texture2D" uid="uid://c1si2jubpg6el" path="res://sprites/ship.png" id="7_j4qnp"]
+[ext_resource type="AudioStream" uid="uid://p7103yrc1ami" path="res://sounds/music.mp3" id="8_fpfj3"]
+[ext_resource type="AudioStream" uid="uid://3o6tm6mue1h7" path="res://sounds/explosion.wav" id="9_sc1dx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
+
+[node name="Main" type="Node2D" unique_id=640311311]
+script = ExtResource("1_03owx")
+invader_scene = ExtResource("2_lgr22")
+
+[node name="Background" type="ColorRect" parent="." unique_id=557125117]
+show_behind_parent = true
+offset_right = 800.0
+offset_bottom = 600.0
+color = Color(0.011764706, 0, 0, 1)
+
+[node name="BulletContainer" type="Node2D" parent="." unique_id=1775590247]
+
+[node name="InvaderContainer" type="Node2D" parent="." unique_id=325367223]
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=300643583]
+top_level = true
+collision_mask = 255
+script = ExtResource("5_c6i3y")
+bullet_scene = ExtResource("4_trn2v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1336403783]
+shape = SubResource("RectangleShape2D_3dxm6")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1047097137]
+position = Vector2(367.49997, 528.75)
+scale = Vector2(0.1, 0.093)
+texture = ExtResource("7_j4qnp")
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=524697359]
+
+[node name="HUD" type="Control" parent="UILayer" unique_id=827005280]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ScoreLabel" type="Label" parent="UILayer/HUD" unique_id=2096422439]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="LivesLabel" type="Label" parent="UILayer/HUD" unique_id=1401224048]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="FPSLabel" type="Label" parent="UILayer/HUD" unique_id=1190743198]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="SoundLabel" type="Label" parent="UILayer/HUD" unique_id=2080876173]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="SplashScreen" type="Control" parent="UILayer" unique_id=1591756171]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UILayer/SplashScreen" unique_id=1740962385]
+layout_mode = 0
+offset_left = 229.0
+offset_top = 193.0
+offset_right = 587.0
+offset_bottom = 254.0
+theme_override_colors/font_color = Color(1, 0.007843138, 0.023529412, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 0, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 44
+text = "SPACE INVADERS"
+
+[node name="Label2" type="Label" parent="UILayer/SplashScreen" unique_id=194874925]
+layout_mode = 0
+offset_left = 255.0
+offset_top = 281.0
+offset_right = 555.0
+offset_bottom = 317.0
+theme_override_colors/font_color = Color(0, 0.98039216, 1, 1)
+theme_override_font_sizes/font_size = 26
+text = "using Bluetooth Joystick"
+
+[node name="GameOverScreen" type="Control" parent="UILayer" unique_id=1733308159]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 121.0
+offset_top = 106.0
+offset_right = 161.0
+offset_bottom = 146.0
+
+[node name="ColorRect" type="ColorRect" parent="UILayer/GameOverScreen" unique_id=996621525]
+layout_mode = 0
+offset_left = -124.0
+offset_top = -103.0
+offset_right = 676.0
+offset_bottom = 497.0
+color = Color(0.011764706, 0, 0, 1)
+
+[node name="GameOverLabel" type="Label" parent="UILayer/GameOverScreen" unique_id=337444462]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 148.0
+offset_right = 481.0
+offset_bottom = 212.0
+theme_override_font_sizes/font_size = 28
+text = "GAME OVER! Press R to restart"
+
+[node name="Timer" type="Timer" parent="." unique_id=1478430211]
+
+[node name="AudioPlayers" type="Node2D" parent="." unique_id=1044048736]
+
+[node name="MusicPlayer" type="AudioStreamPlayer2D" parent="AudioPlayers" unique_id=416383100]
+stream = ExtResource("8_fpfj3")
+autoplay = true
+
+[node name="ShootPlayer" type="AudioStreamPlayer2D" parent="AudioPlayers" unique_id=1602000157]
+stream = ExtResource("6_c2ibq")
+autoplay = true
+
+[node name="ExplosionPlayer" type="AudioStreamPlayer2D" parent="AudioPlayers" unique_id=1066888085]
+stream = ExtResource("9_sc1dx")
+autoplay = true

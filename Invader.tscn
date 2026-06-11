@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bbnqpblkpx003"]
+
+[ext_resource type="Script" uid="uid://wj245prq12t2" path="res://scripts/invader.gd" id="1_i2sac"]
+[ext_resource type="Texture2D" uid="uid://dt8sr4vo0ol5d" path="res://sprites/spacesprite.png" id="2_2bc47"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oxghf"]
+
+[node name="Invader Scene (Node2D)" type="Node2D" unique_id=1350319835]
+
+[node name="Invader (Area2D)" type="Area2D" parent="." unique_id=978017885]
+script = ExtResource("1_i2sac")
+
+[node name="Sprite2D" type="Sprite2D" parent="Invader (Area2D)" unique_id=1710094832]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_2bc47")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Invader (Area2D)" unique_id=534035500]
+shape = SubResource("RectangleShape2D_oxghf")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Invader (Area2D)" unique_id=1911147722]
