@@ -13,7 +13,7 @@ func _ready():
 	udp.listen(9000)
 	print("Listening for Pico W data on port 9000...")
 
-func _process(delta):
+func _process(_delta):
 	if udp.is_connection_available():
 		var peer = udp.take_connection()
 		var packet = peer.get_packet()

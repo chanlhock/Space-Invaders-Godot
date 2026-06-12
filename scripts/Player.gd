@@ -7,7 +7,7 @@ extends CharacterBody2D
 var last_fire_time = 0 
 var fire_cooldown = 500 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	var direction = 0.0
 
 	# 1. Keyboard Input (Prioritized)
@@ -38,13 +38,32 @@ func _physics_process(delta):
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
 
+#func fire_bullet():
+#	if bullet_scene:
+#		var bullet = bullet_scene.instantiate()
+#		bullet.position = position + Vector2(0, -20)
+#		
+#		# Add to the BulletContainer if it exists, otherwise add to parent
+#		if get_node_or_null("/root/Main/BulletContainer"):
+#			get_node("/root/Main/BulletContainer").add_child(bullet)
+#		else:
+#			get_parent().add_child(bullet)
+			
 func fire_bullet():
 	if bullet_scene:
 		var bullet = bullet_scene.instantiate()
 		bullet.position = position + Vector2(0, -20)
 		
 		# Add to the BulletContainer if it exists, otherwise add to parent
-		if get_node_or_null("/root/Main/BulletContainer"):
-			get_node("/root/Main/BulletContainer").add_child(bullet)
+		var main = get_node_or_null("/root/Main")
+		if main and main.has_node("BulletContainer"):
+			main.get_node("BulletContainer").add_child(bullet)
 		else:
-			get_parent().add_child(bullet)
+			# Create BulletContainer if it doesn't exist
+			if main and not main.has_node("BulletContainer"):
+				var container = Node2D.new()
+				container.name = "BulletContainer"
+				main.add_child(container)
+				container.add_child(bullet)
+			else:
+				get_parent().add_child(bullet)

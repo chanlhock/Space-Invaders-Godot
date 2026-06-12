@@ -24,8 +24,44 @@ func _ready():
 	$UILayer/GameOverScreen.visible = false
 	$UILayer/HUD.visible = false
 	
-	# Simulate startup delay, then start game
-	await get_tree().create_timer(2.0).timeout
+	# Ensure GameInput exists
+	if not has_node("/root/GameInput"):
+		push_error("GameInput autoload not found! Please add it in Project Settings -> Autoload")
+	
+	# Connect restart button if it exists
+	if $UILayer/GameOverScreen.has_node("RestartButton"):
+		$UILayer/GameOverScreen/RestartButton.pressed.connect(restart_game)
+		
+	# Start the Bluetooth search process
+	start_bluetooth_search()
+
+func start_bluetooth_search():
+	# 1. Update the UI to tell the user we are searching
+	if $UILayer/SplashScreen.has_node("ConnectionLabel"):
+		$UILayer/SplashScreen/ConnectionLabel.text = "Searching for Bluetooth Joystick...\n(Please turn on your Pico W)"
+
+	# 2. Safely check if the timer exists before starting it
+	if has_node("ConnectionTimer"):
+		$ConnectionTimer.start()
+	else:
+		# If the timer is missing, warn us in the Output panel and just start the game
+		push_warning("ConnectionTimer node not found in Main scene! Skipping Bluetooth search.")
+		start_game()
+
+# This function is automatically called when the 10 seconds run out!
+func _on_ConnectionTimer_timeout():
+	# 3. Check if the joystick connected in time
+	if GameInput.connected:
+		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
+			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Connected! Starting Game..."
+		print("Bluetooth Joystick Connected Successfully!")
+	else:
+		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
+			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nUsing Keyboard Controls..."
+		print("Bluetooth Timeout! Falling back to Keyboard controls.")
+
+	# 4. Wait 2 seconds so the user can read the message, then start the game
+	#await get_tree().create_timer(2.0).timeout
 	start_game()
 
 func _process(delta):
@@ -99,8 +135,19 @@ func game_over():
 	$UILayer/GameOverScreen.visible = true
 	$UILayer/HUD.visible = false
 
+#func restart_game():
+#	# Clear existing invaders
+#	for child in $InvaderContainer.get_children():
+#		child.queue_free()
+#	start_game()
 func restart_game():
 	# Clear existing invaders
 	for child in $InvaderContainer.get_children():
 		child.queue_free()
+	
+	# Wait a frame for cleanup
+	await get_tree().process_frame
+	
+	# Reset game state
+	game_active = false
 	start_game()

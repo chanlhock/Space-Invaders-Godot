@@ -7,7 +7,7 @@
 
 [node name="Invader Scene" type="Node2D" unique_id=1350319835]
 
-[node name="Invader (Area2D)" type="Area2D" parent="." unique_id=978017885]
+[node name="Invader (Area2D)" type="Area2D" parent="." unique_id=978017885 groups=["invader"]]
 script = ExtResource("1_i2sac")
 
 [node name="Sprite2D" type="Sprite2D" parent="Invader (Area2D)" unique_id=1710094832]
