@@ -30,7 +30,7 @@ func take_damage():
 		# FIX: Changed main.$InvaderContainer to main.get_node("InvaderContainer")
 		if main.get_node("InvaderContainer").get_child_count() <= 1:
 			main.spawn_invaders()
-			main.invader_speed += 2.0 # Make the next wave faster!
+			main.invader_speed += 5.0 # Make the next wave faster!
 			
 	# Destroy this invader
 	queue_free()

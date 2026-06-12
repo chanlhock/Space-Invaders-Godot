@@ -97,7 +97,7 @@ func _process(delta):
 		is_at_edge = false
 
 	# 5. Game Over check
-	if $InvaderContainer.position.y > 400: 
+	if $InvaderContainer.position.y > 600: 
 		game_over()
 
 func start_game():
@@ -112,6 +112,8 @@ func start_game():
 	$InvaderContainer.position = Vector2(2, 20) 
 	
 	update_score()
+	update_mode()
+	sound_status()
 	spawn_invaders()
 
 func spawn_invaders():
@@ -129,7 +131,27 @@ func spawn_invaders():
 func update_score():
 	# Update the label in the HUD
 	$UILayer/HUD/ScoreLabel.text = "Score: %d" % score
+	
+func update_mode():
+	# Update the label in the HUD
+	if GameInput.connected:
+		$UILayer/HUD/ModeLabel.text = "JOYSTICK MODE" 
+	else:
+		$UILayer/HUD/ModeLabel.text = "KEYBOARD MODE" 
+	
+func is_bus_muted(bus_name: String = "Master") -> bool:
+	var bus_index = AudioServer.get_bus_index(bus_name)
+	var is_explicitly_muted = AudioServer.is_bus_mute(bus_index)
+	var volume_db = AudioServer.get_bus_volume_db(bus_index)
+	return is_explicitly_muted or volume_db <= -80.0
 
+func sound_status():
+	# Update the label in the HUD
+	if is_bus_muted("Master"):
+		$UILayer/HUD/SoundLabel.text = "SOUND OFF" 
+	else:
+		$UILayer/HUD/SoundLabel.text = "SOUND ON" 
+		
 func game_over():
 	game_active = false
 	$UILayer/GameOverScreen.visible = true

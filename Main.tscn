@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://c6fdsu3cf0xgx"]
 
+[ext_resource type="Script" uid="uid://c35m354b70lqa" path="res://scripts/Main.gd" id="1_trn2v"]
 [ext_resource type="PackedScene" uid="uid://bbnqpblkpx003" path="res://Invader.tscn" id="2_lgr22"]
 [ext_resource type="Texture2D" uid="uid://dt8sr4vo0ol5d" path="res://sprites/spacesprite.png" id="3_20pc6"]
 [ext_resource type="PackedScene" uid="uid://dm47upnxmwerj" path="res://Bullet.tscn" id="4_trn2v"]
@@ -9,147 +10,11 @@
 [ext_resource type="AudioStream" uid="uid://p7103yrc1ami" path="res://sounds/music.mp3" id="8_fpfj3"]
 [ext_resource type="AudioStream" uid="uid://3o6tm6mue1h7" path="res://sounds/explosion.wav" id="9_sc1dx"]
 
-[sub_resource type="GDScript" id="GDScript_trn2v"]
-script/source = "extends Node2D
-
-# --- Game State Variables ---
-var score = 0
-var game_active = false
-var is_at_edge = false 
-
-# ... (replace your old _process function with this one) ...
-# --- Invader Group Movement Variables ---
-var invader_direction = 1  # 1 = Right, -1 = Left
-var invader_speed = 30.0   # Starting speed
-var drop_amount = 8.0     # How far they drop when hitting the edge
-var edge_limit = 50.0      # Distance from screen edge to trigger turn
-var formation_width = 660.0 # 11 invaders * 60 spacing = 660 pixels wide
-
-# --- Grid Settings ---
-@export var rows = 3
-@export var cols = 11
-@export var invader_scene: PackedScene
-
-func _ready():
-	# Initial UI Setup
-	$UILayer/SplashScreen.visible = true
-	$UILayer/GameOverScreen.visible = false
-	$UILayer/HUD.visible = false
-	
-	# Start the Bluetooth search process
-	start_bluetooth_search()
-
-func start_bluetooth_search():
-	# 1. Update the UI to tell the user we are searching
-	if $UILayer/SplashScreen.has_node(\"ConnectionLabel\"):
-		$UILayer/SplashScreen/ConnectionLabel.text = \"Searching for Bluetooth Joystick...\\n(Please turn on your Pico W)\"
-
-	# 2. Safely check if the timer exists before starting it
-	if has_node(\"ConnectionTimer\"):
-		$ConnectionTimer.start()
-	else:
-		# If the timer is missing, warn us in the Output panel and just start the game
-		push_warning(\"ConnectionTimer node not found in Main scene! Skipping Bluetooth search.\")
-		start_game()
-
-# This function is automatically called when the 10 seconds run out!
-func _on_ConnectionTimer_timeout():
-	# 3. Check if the joystick connected in time
-	if GameInput.connected:
-		if $UILayer/SplashScreen.has_node(\"ConnectionLabel\"):
-			$UILayer/SplashScreen/ConnectionLabel.text = \"Joystick Connected! Starting Game...\"
-		print(\"Bluetooth Joystick Connected Successfully!\")
-	else:
-		if $UILayer/SplashScreen.has_node(\"ConnectionLabel\"):
-			$UILayer/SplashScreen/ConnectionLabel.text = \"Joystick Not Found.\\nUsing Keyboard Controls...\"
-		print(\"Bluetooth Timeout! Falling back to Keyboard controls.\")
-
-	# 4. Wait 2 seconds so the user can read the message, then start the game
-	await get_tree().create_timer(2.0).timeout
-	start_game()
-
-func _process(delta):
-	if not game_active:
-		return
-
-	# 1. Move the container horizontally
-	$InvaderContainer.position.x += invader_direction * invader_speed * delta
-	
-	var screen_width = get_viewport_rect().size.x
-	
-	# Calculate the actual right edge of the invaders
-	var right_edge_of_invaders = $InvaderContainer.position.x + formation_width
-	
-	# 2. Check Right Edge (using the actual invader position)
-	if right_edge_of_invaders > screen_width - 20: 
-		if not is_at_edge: 
-			invader_direction = -1 # Bounce left
-			$InvaderContainer.position.y += drop_amount
-			invader_speed += 5.0
-			is_at_edge = true 
-			
-	# 3. Check Left Edge (Invaders start at x=50 inside container, so check < 30)
-	elif $InvaderContainer.position.x < 20:
-		if not is_at_edge: 
-			invader_direction = 1 # Bounce right
-			$InvaderContainer.position.y += drop_amount
-			invader_speed += 5.0
-			is_at_edge = true 
-			
-	# 4. Reset the lock when they move away from the edge
-	else:
-		is_at_edge = false
-
-	# 5. Game Over check
-	if $InvaderContainer.position.y > 400: 
-		game_over()
-
-func start_game():
-	$UILayer/SplashScreen.visible = false
-	$UILayer/GameOverScreen.visible = false
-	$UILayer/HUD.visible = true
-	
-	game_active = true
-	score = 0
-	invader_speed = 30.0 # Reset speed
-	invader_direction = 1
-	$InvaderContainer.position = Vector2(2, 20) 
-	
-	update_score()
-	spawn_invaders()
-
-func spawn_invaders():
-	var start_x = 30
-	var start_y = 50
-	var spacing_x = 60
-	var spacing_y = 50
-
-	for r in range(rows):
-		for c in range(cols):
-			var invader = invader_scene.instantiate()
-			invader.position = Vector2(start_x + c * spacing_x, start_y + r * spacing_y)
-			$InvaderContainer.add_child(invader)
-
-func update_score():
-	# Update the label in the HUD
-	$UILayer/HUD/ScoreLabel.text = \"Score: %d\" % score
-
-func game_over():
-	game_active = false
-	$UILayer/GameOverScreen.visible = true
-	$UILayer/HUD.visible = false
-
-func restart_game():
-	# Clear existing invaders
-	for child in $InvaderContainer.get_children():
-		child.queue_free()
-	start_game()
-"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_03owx"]
+size = Vector2(64, 68)
 
 [node name="Main" type="Node2D" unique_id=640311311]
-script = SubResource("GDScript_trn2v")
+script = ExtResource("1_trn2v")
 invader_scene = ExtResource("2_lgr22")
 
 [node name="Background" type="ColorRect" parent="." unique_id=557125117]
@@ -168,13 +33,14 @@ collision_mask = 255
 script = ExtResource("5_c6i3y")
 bullet_scene = ExtResource("4_trn2v")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1336403783]
-shape = SubResource("RectangleShape2D_3dxm6")
-
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1047097137]
 position = Vector2(393.49994, 528.75)
 scale = Vector2(0.08, 0.075)
 texture = ExtResource("7_j4qnp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=765033067]
+position = Vector2(395, 526)
+shape = SubResource("RectangleShape2D_03owx")
 
 [node name="UILayer" type="CanvasLayer" parent="." unique_id=524697359]
 
@@ -196,21 +62,37 @@ offset_bottom = 23.0
 
 [node name="FPSLabel" type="Label" parent="UILayer/HUD" unique_id=1190743198]
 layout_mode = 0
-offset_right = 40.0
+offset_left = 722.0
+offset_right = 762.0
 offset_bottom = 23.0
 
 [node name="SoundLabel" type="Label" parent="UILayer/HUD" unique_id=2080876173]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 714.0
+offset_top = 576.0
+offset_right = 754.0
+offset_bottom = 599.0
+theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.011764706, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="ModeLabel" type="Label" parent="UILayer/HUD" unique_id=116307668]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 1.0
+offset_right = 657.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.011764706, 1)
+theme_override_font_sizes/font_size = 13
 
 [node name="SplashScreen" type="Control" parent="UILayer" unique_id=1591756171]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -294,6 +176,6 @@ stream = ExtResource("9_sc1dx")
 autoplay = true
 
 [node name="ConnectionTimer" type="Timer" parent="." unique_id=782928425]
-wait_time = 10.0
+wait_time = 5.0
 
 [connection signal="timeout" from="ConnectionTimer" to="." method="_on_ConnectionTimer_timeout"]
