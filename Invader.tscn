@@ -22,3 +22,4 @@ position = Vector2(-2, -0.5)
 shape = SubResource("RectangleShape2D_oxghf")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Invader (Area2D)" unique_id=1911147722]
+rect = Rect2(-22, -21, 40, 41)

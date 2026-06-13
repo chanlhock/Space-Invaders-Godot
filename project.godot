@@ -21,8 +21,8 @@ GameInput="*uid://51p07ypkeuqu"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=600
+window/size/viewport_width=1024
+window/size/viewport_height=768
 
 [input]
 

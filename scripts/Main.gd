@@ -8,14 +8,14 @@ var is_at_edge = false
 # ... (replace your old _process function with this one) ...
 # --- Invader Group Movement Variables ---
 var invader_direction = 1  # 1 = Right, -1 = Left
-var invader_speed = 30.0   # Starting speed
-var drop_amount = 8.0     # How far they drop when hitting the edge
-var edge_limit = 50.0      # Distance from screen edge to trigger turn
-var formation_width = 660.0 # 11 invaders * 60 spacing = 660 pixels wide
+var invader_speed = 60.0   # Starting speed
+var drop_amount = 10.0     # How far they drop when hitting the edge
+var edge_limit = 20.0      # Distance from screen edge to trigger turn
+var formation_width = 720.0 # 12 invaders * 60 spacing = 720 pixels wide
 
 # --- Grid Settings ---
 @export var rows = 3
-@export var cols = 11
+@export var cols = 12
 @export var invader_scene: PackedScene
 
 func _ready():
@@ -50,6 +50,9 @@ func start_bluetooth_search():
 
 # This function is automatically called when the 10 seconds run out!
 func _on_ConnectionTimer_timeout():
+	# STOP THE TIMER SO IT NEVER FIRES AGAIN!
+	if has_node("ConnectionTimer"):
+		$ConnectionTimer.stop() 
 	# 3. Check if the joystick connected in time
 	if GameInput.connected:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
@@ -72,32 +75,38 @@ func _process(delta):
 	$InvaderContainer.position.x += invader_direction * invader_speed * delta
 	
 	var screen_width = get_viewport_rect().size.x
-	
+	#print("Screen Width:",screen_width)
 	# Calculate the actual right edge of the invaders
 	var right_edge_of_invaders = $InvaderContainer.position.x + formation_width
+	#print("right_edge_of_invaders:",right_edge_of_invaders)
 	
 	# 2. Check Right Edge (using the actual invader position)
-	if right_edge_of_invaders > screen_width - 20: 
+	if right_edge_of_invaders > screen_width - 20.0: 
 		if not is_at_edge: 
 			invader_direction = -1 # Bounce left
 			$InvaderContainer.position.y += drop_amount
+			print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
+			print("Is at edge:",is_at_edge)
 			
 	# 3. Check Left Edge (Invaders start at x=50 inside container, so check < 30)
-	elif $InvaderContainer.position.x < 20:
+	elif $InvaderContainer.position.x < 20.0:
+		print("Invader Position X:",$InvaderContainer.position.x)
 		if not is_at_edge: 
 			invader_direction = 1 # Bounce right
 			$InvaderContainer.position.y += drop_amount
+			print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
+			print("Is at edge:",is_at_edge)
 			
 	# 4. Reset the lock when they move away from the edge
 	else:
 		is_at_edge = false
 
 	# 5. Game Over check
-	if $InvaderContainer.position.y > 600: 
+	if $InvaderContainer.position.y > 500.0: 
 		game_over()
 
 func start_game():
@@ -107,7 +116,7 @@ func start_game():
 	
 	game_active = true
 	score = 0
-	invader_speed = 30.0 # Reset speed
+	invader_speed = 60.0 # Reset speed
 	invader_direction = 1
 	$InvaderContainer.position = Vector2(2, 20) 
 	

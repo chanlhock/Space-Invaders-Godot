@@ -19,8 +19,8 @@ invader_scene = ExtResource("2_lgr22")
 
 [node name="Background" type="ColorRect" parent="." unique_id=557125117]
 show_behind_parent = true
-offset_right = 800.0
-offset_bottom = 600.0
+offset_right = 1024.0
+offset_bottom = 768.0
 color = Color(0.011764706, 0, 0, 1)
 
 [node name="BulletContainer" type="Node2D" parent="." unique_id=1775590247]
@@ -34,12 +34,12 @@ script = ExtResource("5_c6i3y")
 bullet_scene = ExtResource("4_trn2v")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1047097137]
-position = Vector2(393.49994, 528.75)
+position = Vector2(504.49994, 691.75)
 scale = Vector2(0.08, 0.075)
 texture = ExtResource("7_j4qnp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=765033067]
-position = Vector2(395, 526)
+position = Vector2(505, 688)
 shape = SubResource("RectangleShape2D_03owx")
 
 [node name="UILayer" type="CanvasLayer" parent="." unique_id=524697359]
@@ -52,8 +52,10 @@ offset_bottom = 40.0
 
 [node name="ScoreLabel" type="Label" parent="UILayer/HUD" unique_id=2096422439]
 layout_mode = 0
-offset_right = 40.0
+offset_left = 10.0
+offset_right = 50.0
 offset_bottom = 23.0
+theme_override_font_sizes/font_size = 20
 
 [node name="LivesLabel" type="Label" parent="UILayer/HUD" unique_id=1401224048]
 layout_mode = 0
@@ -62,27 +64,28 @@ offset_bottom = 23.0
 
 [node name="FPSLabel" type="Label" parent="UILayer/HUD" unique_id=1190743198]
 layout_mode = 0
-offset_left = 722.0
-offset_right = 762.0
+offset_left = 918.0
+offset_right = 958.0
 offset_bottom = 23.0
+theme_override_font_sizes/font_size = 18
 
 [node name="SoundLabel" type="Label" parent="UILayer/HUD" unique_id=2080876173]
 layout_mode = 0
-offset_left = 714.0
-offset_top = 576.0
-offset_right = 754.0
-offset_bottom = 599.0
+offset_left = 882.0
+offset_top = 733.0
+offset_right = 922.0
+offset_bottom = 759.0
 theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.011764706, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 18
 
 [node name="ModeLabel" type="Label" parent="UILayer/HUD" unique_id=116307668]
 layout_mode = 0
-offset_left = 617.0
-offset_top = 1.0
-offset_right = 657.0
-offset_bottom = 24.0
+offset_left = 708.0
+offset_top = 2.0
+offset_right = 748.0
+offset_bottom = 25.0
 theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.011764706, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 
 [node name="SplashScreen" type="Control" parent="UILayer" unique_id=1591756171]
 layout_mode = 3
@@ -98,68 +101,68 @@ grow_vertical = 2
 
 [node name="Title1" type="Label" parent="UILayer/SplashScreen" unique_id=1740962385]
 layout_mode = 0
-offset_left = 229.0
-offset_top = 177.0
-offset_right = 587.0
-offset_bottom = 238.0
+offset_left = 289.0
+offset_top = 157.0
+offset_right = 744.0
+offset_bottom = 234.0
 theme_override_colors/font_color = Color(1, 0.007843138, 0.023529412, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 0, 1)
 theme_override_constants/outline_size = 7
-theme_override_font_sizes/font_size = 44
+theme_override_font_sizes/font_size = 56
 text = "SPACE INVADERS"
 
 [node name="Title2" type="Label" parent="UILayer/SplashScreen" unique_id=194874925]
 layout_mode = 0
-offset_left = 255.0
-offset_top = 238.0
-offset_right = 555.0
-offset_bottom = 274.0
+offset_left = 347.0
+offset_top = 229.0
+offset_right = 695.0
+offset_bottom = 271.0
 theme_override_colors/font_color = Color(0, 0.98039216, 1, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 text = "using Bluetooth Joystick"
 
 [node name="ConnectionLabel" type="Label" parent="UILayer/SplashScreen" unique_id=2085672726]
 layout_mode = 0
-offset_left = 288.0
-offset_top = 366.0
-offset_right = 328.0
-offset_bottom = 389.0
+offset_left = 379.0
+offset_top = 288.0
+offset_right = 419.0
+offset_bottom = 314.0
+theme_override_font_sizes/font_size = 18
 
 [node name="Invader" type="Sprite2D" parent="UILayer/SplashScreen" unique_id=1107225401]
-position = Vector2(308, 322)
+position = Vector2(394, 391)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("3_20pc6")
 
 [node name="Ship" type="Sprite2D" parent="UILayer/SplashScreen" unique_id=1558799934]
-position = Vector2(504, 321)
+position = Vector2(667, 396)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("7_j4qnp")
 
 [node name="GameOverScreen" type="Control" parent="UILayer" unique_id=1733308159]
+visible = false
 layout_mode = 3
 anchors_preset = 0
-offset_left = 100.0
-offset_top = 101.0
-offset_right = 140.0
-offset_bottom = 141.0
+offset_left = 1.0
+offset_top = -3.0
+offset_right = 1031.0
+offset_bottom = 773.0
 
 [node name="ColorRect" type="ColorRect" parent="UILayer/GameOverScreen" unique_id=996621525]
-visible = false
 layout_mode = 0
-offset_left = -124.0
-offset_top = -103.0
-offset_right = 676.0
-offset_bottom = 497.0
+offset_right = 1024.0
+offset_bottom = 768.0
 color = Color(0.011764706, 0, 0, 1)
 
 [node name="GameOverLabel" type="Label" parent="UILayer/GameOverScreen" unique_id=337444462]
 layout_mode = 0
-offset_left = 95.0
-offset_top = 148.0
-offset_right = 503.0
-offset_bottom = 212.0
-theme_override_font_sizes/font_size = 28
+offset_left = 233.0
+offset_top = 311.0
+offset_right = 641.0
+offset_bottom = 375.0
+theme_override_font_sizes/font_size = 39
 text = "GAME OVER! Press R to restart"
+vertical_alignment = 1
 
 [node name="AudioPlayers" type="Node2D" parent="." unique_id=1044048736]
 
