@@ -28,7 +28,6 @@ color = Color(0.011764706, 0, 0, 1)
 [node name="InvaderContainer" type="Node2D" parent="." unique_id=325367223]
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=300643583]
-top_level = true
 collision_mask = 255
 script = ExtResource("5_c6i3y")
 bullet_scene = ExtResource("4_trn2v")

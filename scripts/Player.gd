@@ -37,9 +37,12 @@ func _physics_process(_delta):
 
 	# 4. Keep player within screen bounds (Fixed to account for sprite width)
 	# This stops the exact edge of the ship from touching the wall, rather than the center of the ship
-	var half_width = $Sprite2D.texture.get_width() / 2.0
+	var sprite_width = $Sprite2D.texture.get_width() * $Sprite2D.scale.x
+	var half_width = sprite_width / 2.0
+	#var half_width = $Sprite2D.texture.get_width() / 2.0
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
+	print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x)
 
 #func fire_bullet():
 #	if bullet_scene:
