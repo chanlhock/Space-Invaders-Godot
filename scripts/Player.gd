@@ -16,10 +16,10 @@ func _physics_process(_delta):
 
 	# 1. Keyboard Input (Prioritized)
 	if Input.is_action_pressed("move_left"):
-		print("⬅️ LEFT KEY PRESSED!")
+		#print("⬅️ LEFT KEY PRESSED!")
 		direction -= 1.0
 	elif Input.is_action_pressed("move_right"):
-		print("➡️ RIGHT KEY PRESSED!")
+		#print("➡️ RIGHT KEY PRESSED!")
 		direction += 1.0
 	else:
 		# 2. Joystick Input (Only used if NO keyboard keys are pressed)
@@ -45,7 +45,7 @@ func _physics_process(_delta):
 	var half_width = sprite_width / 2.0
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
-	print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x)
+	#print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x  )
 
 
 #func fire_bullet():
@@ -73,5 +73,11 @@ func fire_bullet():
 		var container = main.get_node("BulletContainer")
 		container.add_child(bullet)
 		print("✓ Bullet added to BulletContainer")
+		# Play bullet sound effect
+		if main.has_node("AudioPlayers/ShootPlayer"):
+			main.get_node("AudioPlayers/ShootPlayer").play()
+			print("🔊 Playing shoot sound")
 	else:
 		print("❌ ERROR: BulletContainer not found!")
+		
+	

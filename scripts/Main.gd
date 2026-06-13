@@ -88,18 +88,18 @@ func _process(delta):
 			print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
-			print("Is at edge:",is_at_edge)
+			#print("Is at edge:",is_at_edge)
 			
 	# 3. Check Left Edge (Invaders start at x=50 inside container, so check < 30)
 	elif $InvaderContainer.position.x < 20.0:
-		print("Invader Position X:",$InvaderContainer.position.x)
+		#print("Invader Position X:",$InvaderContainer.position.x)
 		if not is_at_edge: 
 			invader_direction = 1 # Bounce right
 			$InvaderContainer.position.y += drop_amount
-			print("Invader Position Y:",$InvaderContainer.position.y)
+			#print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
-			print("Is at edge:",is_at_edge)
+			#print("Is at edge:",is_at_edge)
 			
 	# 4. Reset the lock when they move away from the edge
 	else:
