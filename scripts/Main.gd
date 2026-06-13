@@ -70,7 +70,14 @@ func _on_ConnectionTimer_timeout():
 func _process(delta):
 	if not game_active:
 		return
-
+		
+	# Handle game over screen input
+	if not game_active and $UILayer/GameOverScreen.visible:
+		if Input.is_action_just_pressed("restart"):
+			restart_game()
+		elif Input.is_action_just_pressed("quit"):
+			get_tree().quit()
+			
 	# 1. Move the container horizontally
 	$InvaderContainer.position.x += invader_direction * invader_speed * delta
 	
@@ -161,6 +168,18 @@ func sound_status():
 	else:
 		$UILayer/HUD/SoundLabel.text = "SOUND ON" 
 		
+func check_all_invaders_destroyed():
+	"""Check if all invaders have been destroyed"""
+	var invader_count = $InvaderContainer.get_child_count()
+	if invader_count == 0:
+		game_won()
+
+func game_won():
+	"""Called when player destroys all invaders"""
+	game_active = false
+	$UILayer/GameOverScreen.visible = true
+	$UILayer/GameOverScreen/GameOverLabel.text = "YOU WIN!\nFinal Score: %d\nPress R to Restart or ESC to Quit" % score
+	
 func game_over():
 	game_active = false
 	$UILayer/GameOverScreen.visible = true

@@ -137,7 +137,6 @@ scale = Vector2(0.08, 0.08)
 texture = ExtResource("7_j4qnp")
 
 [node name="GameOverScreen" type="Control" parent="UILayer" unique_id=1733308159]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 1.0

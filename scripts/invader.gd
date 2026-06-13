@@ -34,3 +34,5 @@ func take_damage():
 			
 	# Destroy this invader
 	queue_free()
+	await get_tree().process_frame
+	main.check_all_invaders_destroyed()  # Check if all gone
