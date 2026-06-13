@@ -7,6 +7,10 @@ extends CharacterBody2D
 var last_fire_time = 0 
 var fire_cooldown = 500 
 
+func _ready():
+	# Initialize player at bottom center of screen
+	position = Vector2(get_viewport_rect().size.x / 2.0, get_viewport_rect().size.y - 80)
+
 func _physics_process(_delta):
 	var direction = 0.0
 
@@ -39,14 +43,10 @@ func _physics_process(_delta):
 	# This stops the exact edge of the ship from touching the wall, rather than the center of the ship
 	var sprite_width = $Sprite2D.texture.get_width() * $Sprite2D.scale.x
 	var half_width = sprite_width / 2.0
-	#var half_width = $Sprite2D.texture.get_width() / 2.0
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
 	print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x)
 
-func _ready():
-	# Initialize player at bottom center of screen
-	position = Vector2(get_viewport_rect().size.x / 2.0, get_viewport_rect().size.y - 80)
 
 #func fire_bullet():
 #	if bullet_scene:
@@ -60,20 +60,18 @@ func _ready():
 #			get_parent().add_child(bullet)
 			
 func fire_bullet():
-	if bullet_scene:
-		var bullet = bullet_scene.instantiate()
-		bullet.position = position + Vector2(0, -20)
+	if not bullet_scene:
+		print("❌ ERROR: bullet_scene is not assigned!")
+		return
 		
-		# Add to the BulletContainer if it exists, otherwise add to parent
-		var main = get_node_or_null("/root/Main")
-		if main and main.has_node("BulletContainer"):
-			main.get_node("BulletContainer").add_child(bullet)
-		else:
-			# Create BulletContainer if it doesn't exist
-			if main and not main.has_node("BulletContainer"):
-				var container = Node2D.new()
-				container.name = "BulletContainer"
-				main.add_child(container)
-				container.add_child(bullet)
-			else:
-				get_parent().add_child(bullet)
+	var bullet = bullet_scene.instantiate()
+	bullet.position = position + Vector2(0, -30)
+		
+	# Get the BulletContainer and add bullet
+	var main = get_node_or_null("/root/Main")
+	if main and main.has_node("BulletContainer"):
+		var container = main.get_node("BulletContainer")
+		container.add_child(bullet)
+		print("✓ Bullet added to BulletContainer")
+	else:
+		print("❌ ERROR: BulletContainer not found!")

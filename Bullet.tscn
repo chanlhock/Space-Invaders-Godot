@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4s4u5"]
 size = Vector2(44.615387, 40.303032)
 
-[node name="Bullet Scene" type="Node2D" unique_id=1018006908 groups=["bullets"]]
+[node name="Bullet Scene" type="Node2D" unique_id=1018006908]
 
 [node name="Area2D" type="Area2D" parent="." unique_id=418624600 groups=["bullets"]]
 scale = Vector2(0.26, 0.66)
