@@ -44,6 +44,10 @@ func _physics_process(_delta):
 	position.x = clamp(position.x, half_width, screen_width - half_width)
 	print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x)
 
+func _ready():
+	# Initialize player at bottom center of screen
+	position = Vector2(get_viewport_rect().size.x / 2.0, get_viewport_rect().size.y - 80)
+
 #func fire_bullet():
 #	if bullet_scene:
 #		var bullet = bullet_scene.instantiate()

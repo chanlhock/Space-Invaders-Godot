@@ -33,12 +33,10 @@ script = ExtResource("5_c6i3y")
 bullet_scene = ExtResource("4_trn2v")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1047097137]
-position = Vector2(504.49994, 691.75)
 scale = Vector2(0.08, 0.075)
 texture = ExtResource("7_j4qnp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=765033067]
-position = Vector2(505, 688)
 shape = SubResource("RectangleShape2D_03owx")
 
 [node name="UILayer" type="CanvasLayer" parent="." unique_id=524697359]
