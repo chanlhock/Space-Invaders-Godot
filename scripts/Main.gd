@@ -12,6 +12,7 @@ var invader_speed = 60.0   # Starting speed
 var drop_amount = 10.0     # How far they drop when hitting the edge
 var edge_limit = 20.0      # Distance from screen edge to trigger turn
 var formation_width = 720.0 # 12 invaders * 60 spacing = 720 pixels wide
+var invader_count = 36
 
 # --- Grid Settings ---
 @export var rows = 3
@@ -170,7 +171,9 @@ func sound_status():
 		
 func check_all_invaders_destroyed():
 	"""Check if all invaders have been destroyed"""
-	var invader_count = $InvaderContainer.get_child_count()
+	#var invader_count = $InvaderContainer.get_child_count()
+	invader_count = invader_count - 1
+	print("Invader Count:",invader_count) 
 	if invader_count == 0:
 		game_won()
 

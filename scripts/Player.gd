@@ -32,7 +32,7 @@ func _physics_process(_delta):
 	# 3. Fire Button (Keyboard OR Joystick)
 	var should_fire = GameInput.button_pressed or Input.is_action_just_pressed("fire")
 	if should_fire and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
-		print("Fire bullet!")
+		#print("Fire bullet!")
 		fire_bullet()
 		last_fire_time = Time.get_ticks_msec()
 

@@ -28,11 +28,11 @@ func take_damage():
 		
 		# Check if all invaders are dead to spawn a new wave
 		# FIX: Changed main.$InvaderContainer to main.get_node("InvaderContainer")
-		if main.get_node("InvaderContainer").get_child_count() <= 1:
-			main.spawn_invaders()
-			main.invader_speed += 5.0 # Make the next wave faster!
+		#if main.get_node("InvaderContainer").get_child_count() <= 1:
+		#	main.spawn_invaders()
+		#	main.invader_speed += 5.0 # Make the next wave faster!
 			
-	# Destroy this invader
-	queue_free()
-	await get_tree().process_frame
-	main.check_all_invaders_destroyed()  # Check if all gone
+		# Destroy this invader
+		queue_free()
+		await get_tree().process_frame
+		main.check_all_invaders_destroyed()  # Check if all gone

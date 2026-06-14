@@ -16,15 +16,16 @@ func _process(delta):
 		queue_free()
 
 func _on_area_entered(area):
-	print("🎯 Bullet hit: ", area.name)
+	#print("🎯 Bullet hit: ", area.name)
 	if area.is_in_group("invader"):
 		print("✓ Hit an invader!")
 		# Play explosion sound
 		var main = get_node_or_null("/root/Main")
 		if main and main.has_node("AudioPlayers/ExplosionPlayer"):
 			main.get_node("AudioPlayers/ExplosionPlayer").play()
-			print("🔊 Playing explosion sound")
+			#print("🔊 Playing explosion sound")
 		area.take_damage()
 		queue_free()
+		main.check_all_invaders_destroyed()  # Check if all gone
 	else:
 		print("⚠️ Hit something else: ", area.name)
