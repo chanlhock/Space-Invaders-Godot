@@ -20,7 +20,7 @@ func _ready():
 	var error = udp.bind(listen_port, "0.0.0.0")
 	if error == OK:
 		print("GameInput: UDP socket bound successfully to port ", listen_port)
-		print("GameInput: Waiting for Pico W data...")
+		print("GameInput: Waiting for Pi Pico W data...")
 	else:
 		print("GameInput: Failed to bind UDP port - error ", error)
 		print("GameInput: Make sure no other program is using port ", listen_port)
@@ -37,7 +37,7 @@ func _process(delta):
 		
 		if not device_connected:
 			device_connected = true
-			print("GameInput: ✅ Connected to Pico W! (Packet ", packet_count, ")")
+			print("GameInput: ✅ Connected to Pi Pico W! (Packet ", packet_count, ")")
 			print("GameInput: First packet: ", data_string)
 		
 		last_packet_time = Time.get_ticks_msec()
@@ -90,3 +90,4 @@ func _exit_tree():
 	if udp:
 		udp.close()
 		print("GameInput: UDP socket closed")
+		

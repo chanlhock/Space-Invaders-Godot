@@ -86,7 +86,7 @@ func start_bluetooth_search():
 		
 	# 1. Update the UI to tell the user we are searching
 	if $UILayer/SplashScreen.has_node("ConnectionLabel"):
-		$UILayer/SplashScreen/ConnectionLabel.text = "Searching for Bluetooth Joystick...\n(Please turn on your Pico W)"
+		$UILayer/SplashScreen/ConnectionLabel.text = "Searching for WiFi Joystick...\n(Please turn on your Pi Pico W)"
 	
 	# Set waiting_for_input flag to true
 	waiting_for_input = true
@@ -125,8 +125,9 @@ func _on_ConnectionTimer_timeout():
 	
 	if is_joystick_connected:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
-			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Connected! Starting Game..."
-		print("Pico W Joystick Connected Successfully!")
+			$UILayer/SplashScreen/ConnectionLabel.text = "Pi Pico W WiFi Joystick Connected!\nPress ENTER to Start Game..."
+			$UILayer/SplashScreen/Title4.visible = false
+		print("Pi Pico W WiFi Joystick Connected Successfully!")
 	else:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
 			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nPress ENTER for Keyboard mode..."
@@ -257,7 +258,7 @@ func update_mode():
 		is_connected = GameInput.is_device_connected()
 	
 	if is_connected:
-		$UILayer/HUD/ModeLabel.text = "PICO W MODE" 
+		$UILayer/HUD/ModeLabel.text = "JOYSTICK MODE" 
 	else:
 		$UILayer/HUD/ModeLabel.text = "KEYBOARD MODE"
 	
