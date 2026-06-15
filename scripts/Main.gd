@@ -65,49 +65,46 @@ func _on_ConnectionTimer_timeout():
 		print("Bluetooth Timeout! Falling back to Keyboard controls.")
 
 	# 4. Wait 2 seconds so the user can read the message, then start the game
-	#await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(2.0).timeout
 	start_game()
 
 func _process(delta):
-	if not game_active:
-		return
+	#if not game_active:
+	#	return
 		
 	# Handle game over screen input
 	if not game_active and $UILayer/GameOverScreen.visible:
 		if Input.is_action_just_pressed("restart"):
+			print("R pressed! Restarting game... Good luck!")
 			restart_game()
 		elif Input.is_action_just_pressed("quit"):
+			print("ESC pressed! Quit game...")
 			get_tree().quit()
 			
 	# 1. Move the container horizontally
 	$InvaderContainer.position.x += invader_direction * invader_speed * delta
 	
 	var screen_width = get_viewport_rect().size.x
-	#print("Screen Width:",screen_width)
 	# Calculate the actual right edge of the invaders
 	var right_edge_of_invaders = $InvaderContainer.position.x + formation_width
-	#print("right_edge_of_invaders:",right_edge_of_invaders)
 	
 	# 2. Check Right Edge (using the actual invader position)
 	if right_edge_of_invaders > screen_width - 20.0: 
 		if not is_at_edge: 
 			invader_direction = -1 # Bounce left
 			$InvaderContainer.position.y += drop_amount
-			print("Invader Position Y:",$InvaderContainer.position.y)
+			#print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
-			#print("Is at edge:",is_at_edge)
 			
 	# 3. Check Left Edge (Invaders start at x=50 inside container, so check < 30)
 	elif $InvaderContainer.position.x < 20.0:
-		#print("Invader Position X:",$InvaderContainer.position.x)
 		if not is_at_edge: 
 			invader_direction = 1 # Bounce right
 			$InvaderContainer.position.y += drop_amount
 			#print("Invader Position Y:",$InvaderContainer.position.y)
 			invader_speed += 5.0
 			is_at_edge = true 
-			#print("Is at edge:",is_at_edge)
 			
 	# 4. Reset the lock when they move away from the edge
 	else:
@@ -126,6 +123,7 @@ func start_game():
 	score = 0
 	invader_speed = 60.0 # Reset speed
 	invader_direction = 1
+	invader_count = 36
 	$InvaderContainer.position = Vector2(2, 20) 
 	
 	update_score()
@@ -187,12 +185,10 @@ func game_over():
 	game_active = false
 	$UILayer/GameOverScreen.visible = true
 	$UILayer/HUD.visible = false
-
-#func restart_game():
-#	# Clear existing invaders
-#	for child in $InvaderContainer.get_children():
-#		child.queue_free()
-#	start_game()
+	get_node("AudioPlayers/ExplosionPlayer").play()
+	print("🔊 Playing explosion sound")
+	$UILayer/GameOverScreen/GameOverLabel.text = "GAME OVER!\nAlas, You only scored: %d\nPress R to Restart or ESC to Quit" % score
+	
 func restart_game():
 	# Clear existing invaders
 	for child in $InvaderContainer.get_children():

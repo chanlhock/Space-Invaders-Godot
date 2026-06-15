@@ -19,11 +19,11 @@ func _on_area_entered(area):
 	#print("🎯 Bullet hit: ", area.name)
 	if area.is_in_group("invader"):
 		print("✓ Hit an invader!")
-		# Play explosion sound
+		# Play Invader Dies sound
 		var main = get_node_or_null("/root/Main")
-		if main and main.has_node("AudioPlayers/ExplosionPlayer"):
-			main.get_node("AudioPlayers/ExplosionPlayer").play()
-			#print("🔊 Playing explosion sound")
+		if main and main.has_node("AudioPlayers/InvaderDiesPlayer"):
+			main.get_node("AudioPlayers/InvaderDiesPlayer").play()
+			#print("🔊 Playing invader dies sound")
 		area.take_damage()
 		queue_free()
 		main.check_all_invaders_destroyed()  # Check if all gone

@@ -46,18 +46,6 @@ func _physics_process(_delta):
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
 	#print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x  )
-
-
-#func fire_bullet():
-#	if bullet_scene:
-#		var bullet = bullet_scene.instantiate()
-#		bullet.position = position + Vector2(0, -20)
-#		
-#		# Add to the BulletContainer if it exists, otherwise add to parent
-#		if get_node_or_null("/root/Main/BulletContainer"):
-#			get_node("/root/Main/BulletContainer").add_child(bullet)
-#		else:
-#			get_parent().add_child(bullet)
 			
 func fire_bullet():
 	if not bullet_scene:
