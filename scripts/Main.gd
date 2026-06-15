@@ -108,14 +108,29 @@ func _on_ConnectionTimer_timeout():
 	if has_node("ConnectionTimer"):
 		$ConnectionTimer.stop() 
 	# 3. Check if the joystick connected in time
-	if GameInput.connected:
+	#if GameInput.connected:
+	#	if $UILayer/SplashScreen.has_node("ConnectionLabel"):
+	#		$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Connected! Starting Game..."
+	#	print("Bluetooth Joystick Connected Successfully!")
+	#else:
+#		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
+	#		$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nPress ENTER for Keyboard mode..."
+	#		print("Bluetooth Timeout! Falling back to Keyboard controls.")
+	
+	# 3. Check if the joystick connected in time - FIXED: Use is_device_connected() or GameInput.connected
+	var is_joystick_connected = false
+	if has_node("/root/GameInput"):
+		# Try both methods to check connection
+		is_joystick_connected = GameInput.is_device_connected()
+	
+	if is_joystick_connected:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
 			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Connected! Starting Game..."
-		print("Bluetooth Joystick Connected Successfully!")
+		print("Pico W Joystick Connected Successfully!")
 	else:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
 			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nPress ENTER for Keyboard mode..."
-			print("Bluetooth Timeout! Falling back to Keyboard controls.")
+		print("Connection Timeout! Falling back to Keyboard controls.")
 		
 	# 4. Wait 2 seconds so the user can read the message, then start the game
 	#await get_tree().create_timer(2.0).timeout
@@ -197,7 +212,7 @@ func update_loading_wheel_animation():
 	pass
 	
 func start_game():
-		# Hide loading wheel if it's still visible
+	# Hide loading wheel if it's still visible
 	if loading_wheel:
 		loading_wheel.visible = false
 	
@@ -236,11 +251,15 @@ func update_score():
 	$UILayer/HUD/ScoreLabel.text = "Score: %d" % score
 	
 func update_mode():
-	# Update the label in the HUD
-	if GameInput.connected:
-		$UILayer/HUD/ModeLabel.text = "JOYSTICK MODE" 
+	# Update the label in the HUD - FIXED: Check connection properly
+	var is_connected = false
+	if has_node("/root/GameInput"):
+		is_connected = GameInput.is_device_connected()
+	
+	if is_connected:
+		$UILayer/HUD/ModeLabel.text = "PICO W MODE" 
 	else:
-		$UILayer/HUD/ModeLabel.text = "KEYBOARD MODE" 
+		$UILayer/HUD/ModeLabel.text = "KEYBOARD MODE"
 	
 func is_bus_muted(bus_name: String = "Master") -> bool:
 	var bus_index = AudioServer.get_bus_index(bus_name)

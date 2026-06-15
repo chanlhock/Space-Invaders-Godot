@@ -16,37 +16,33 @@ func _physics_process(_delta):
 
 	# 1. Keyboard Input (Prioritized)
 	if Input.is_action_pressed("move_left"):
-		#print("⬅️ LEFT KEY PRESSED!")
 		direction -= 1.0
 	elif Input.is_action_pressed("move_right"):
-		#print("➡️ RIGHT KEY PRESSED!")
 		direction += 1.0
 	else:
 		# 2. Joystick Input (Only used if NO keyboard keys are pressed)
-		if GameInput.connected:
-			if GameInput.joystick_x < 0.4:
+		if GameInput.is_device_connected():
+			var joy_x = GameInput.get_joystick_x()
+			if joy_x < 0.4:
 				direction -= 1.0
-			elif GameInput.joystick_x > 0.6:
+			elif joy_x > 0.6:
 				direction += 1.0
 
-	# 3. Fire Button (Keyboard OR Joystick)
-	var should_fire = GameInput.button_pressed or Input.is_action_just_pressed("fire")
+	# 3. Fire Button (Keyboard OR Joystick) - FIXED: Use is_button_pressed()
+	var should_fire = GameInput.is_button_pressed() or Input.is_action_just_pressed("fire")
 	if should_fire and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
-		#print("Fire bullet!")
 		fire_bullet()
 		last_fire_time = Time.get_ticks_msec()
 
 	velocity.x = direction * speed
 	move_and_slide()
 
-	# 4. Keep player within screen bounds (Fixed to account for sprite width)
-	# This stops the exact edge of the ship from touching the wall, rather than the center of the ship
+	# 4. Keep player within screen bounds
 	var sprite_width = $Sprite2D.texture.get_width() * $Sprite2D.scale.x
 	var half_width = sprite_width / 2.0
 	var screen_width = get_viewport_rect().size.x
 	position.x = clamp(position.x, half_width, screen_width - half_width)
-	#print("Pos X: ", position.x, " | Dir: ", direction, " | Vel X: ", velocity.x  )
-			
+
 func fire_bullet():
 	if not bullet_scene:
 		print("❌ ERROR: bullet_scene is not assigned!")
@@ -67,5 +63,3 @@ func fire_bullet():
 			print("🔊 Playing shoot sound")
 	else:
 		print("❌ ERROR: BulletContainer not found!")
-		
-	
