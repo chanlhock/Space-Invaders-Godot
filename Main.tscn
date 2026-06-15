@@ -99,43 +99,67 @@ grow_vertical = 2
 
 [node name="Title1" type="Label" parent="UILayer/SplashScreen" unique_id=1740962385]
 layout_mode = 0
-offset_left = 289.0
-offset_top = 157.0
-offset_right = 744.0
-offset_bottom = 234.0
+offset_left = 248.0
+offset_top = 150.0
+offset_right = 760.0
+offset_bottom = 237.0
 theme_override_colors/font_color = Color(1, 0.007843138, 0.023529412, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 0, 1)
 theme_override_constants/outline_size = 7
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 63
 text = "SPACE INVADERS"
+horizontal_alignment = 1
 
 [node name="Title2" type="Label" parent="UILayer/SplashScreen" unique_id=194874925]
 layout_mode = 0
-offset_left = 347.0
-offset_top = 229.0
-offset_right = 695.0
-offset_bottom = 271.0
+offset_left = 338.0
+offset_top = 241.0
+offset_right = 686.0
+offset_bottom = 283.0
 theme_override_colors/font_color = Color(0, 0.98039216, 1, 1)
 theme_override_font_sizes/font_size = 30
 text = "using Bluetooth Joystick"
+horizontal_alignment = 1
 
 [node name="ConnectionLabel" type="Label" parent="UILayer/SplashScreen" unique_id=2085672726]
 layout_mode = 0
-offset_left = 379.0
-offset_top = 288.0
-offset_right = 419.0
-offset_bottom = 314.0
-theme_override_font_sizes/font_size = 18
+offset_left = 345.0
+offset_top = 395.0
+offset_right = 385.0
+offset_bottom = 423.0
+theme_override_colors/font_color = Color(1, 1, 0.007843138, 1)
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
 
 [node name="Invader" type="Sprite2D" parent="UILayer/SplashScreen" unique_id=1107225401]
-position = Vector2(394, 391)
-scale = Vector2(0.08, 0.08)
+position = Vector2(422, 333)
+scale = Vector2(0.08394531, 0.08296875)
 texture = ExtResource("3_20pc6")
 
 [node name="Ship" type="Sprite2D" parent="UILayer/SplashScreen" unique_id=1558799934]
-position = Vector2(667, 396)
+position = Vector2(599, 332)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("7_j4qnp")
+
+[node name="Label" type="Label" parent="UILayer/SplashScreen" unique_id=736613463]
+layout_mode = 0
+offset_left = 418.0
+offset_top = 593.0
+offset_right = 600.0
+offset_bottom = 625.0
+theme_override_colors/font_color = Color(0.0627451, 0.9647059, 0.011764706, 1)
+theme_override_font_sizes/font_size = 23
+text = "Press ESC to exit"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="UILayer/SplashScreen" unique_id=104998378]
+layout_mode = 0
+offset_left = 269.0
+offset_top = 554.0
+offset_right = 737.0
+offset_bottom = 577.0
+text = "Make sure Pico W is powered and running the joystick code ..."
+horizontal_alignment = 1
 
 [node name="GameOverScreen" type="Control" parent="UILayer" unique_id=1733308159]
 visible = false
@@ -181,6 +205,6 @@ stream = ExtResource("10_wkp8b")
 autoplay = true
 
 [node name="ConnectionTimer" type="Timer" parent="." unique_id=782928425]
-wait_time = 5.0
+wait_time = 10.0
 
 [connection signal="timeout" from="ConnectionTimer" to="." method="_on_ConnectionTimer_timeout"]

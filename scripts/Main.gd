@@ -8,11 +8,14 @@ var is_at_edge = false
 # ... (replace your old _process function with this one) ...
 # --- Invader Group Movement Variables ---
 var invader_direction = 1  # 1 = Right, -1 = Left
-var invader_speed = 60.0   # Starting speed
+var invader_speed = 100.0   # Starting speed
 var drop_amount = 10.0     # How far they drop when hitting the edge
 var edge_limit = 20.0      # Distance from screen edge to trigger turn
 var formation_width = 720.0 # 12 invaders * 60 spacing = 720 pixels wide
 var invader_count = 36
+var waiting_for_input = false  # NEW: Track if we're waiting for key press
+var loading_wheel = null  # Reference to the loading wheel
+var rotation_speed = 2.0  # Radians per second
 
 # --- Grid Settings ---
 @export var rows = 3
@@ -22,25 +25,71 @@ var invader_count = 36
 func _ready():
 	# Initial UI Setup
 	$UILayer/SplashScreen.visible = true
+	$Player.visible = false
 	$UILayer/GameOverScreen.visible = false
 	$UILayer/HUD.visible = false
+	
+	# Create the loading wheel on the splash screen
+	create_loading_wheel()
 	
 	# Ensure GameInput exists
 	if not has_node("/root/GameInput"):
 		push_error("GameInput autoload not found! Please add it in Project Settings -> Autoload")
 	
 	# Connect restart button if it exists
-	if $UILayer/GameOverScreen.has_node("RestartButton"):
-		$UILayer/GameOverScreen/RestartButton.pressed.connect(restart_game)
+	#if $UILayer/GameOverScreen.has_node("RestartButton"):
+	#	$UILayer/GameOverScreen/RestartButton.pressed.connect(restart_game)
 		
 	# Start the Bluetooth search process
 	start_bluetooth_search()
 
+func create_loading_wheel():
+	# Create an AnimatedSprite2D for the loading wheel
+	loading_wheel = Sprite2D.new()
+	loading_wheel.name = "LoadingWheel"
+	
+	# Create a simple circle texture using a Polygon2D approach
+	var image = Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	image.fill(Color.TRANSPARENT)
+	
+	# Draw simple circle using set_pixel (slow but works for small textures)
+	var center = Vector2(32, 32)
+	var radius = 28
+	
+	for x in range(64):
+		for y in range(64):
+			var dx = x - center.x
+			var dy = y - center.y
+			var dist = sqrt(dx*dx + dy*dy)
+			if abs(dist - radius) < 2:
+				image.set_pixel(x, y, Color.ORANGE_RED)
+			elif dist < radius and dist > radius - 4:
+				# Create a dotted effect for animation
+				if int((x + y) * 0.5) % 4 < 2:
+					image.set_pixel(x, y, Color.GRAY)
+	
+	var texture = ImageTexture.create_from_image(image)
+	loading_wheel.texture = texture
+	loading_wheel.centered = true
+	
+	# Position between invader and player sprites
+	var screen_size = get_viewport().get_visible_rect().size
+	loading_wheel.position = Vector2(screen_size.x / 2, screen_size.y / 2 - 50)
+	
+	$UILayer/SplashScreen.add_child(loading_wheel)
+	loading_wheel.visible = false
+	
 func start_bluetooth_search():
+	# Show the loading wheel
+	if loading_wheel:
+		loading_wheel.visible = true
+		
 	# 1. Update the UI to tell the user we are searching
 	if $UILayer/SplashScreen.has_node("ConnectionLabel"):
 		$UILayer/SplashScreen/ConnectionLabel.text = "Searching for Bluetooth Joystick...\n(Please turn on your Pico W)"
-
+	
+	# Set waiting_for_input flag to true
+	waiting_for_input = true
 	# 2. Safely check if the timer exists before starting it
 	if has_node("ConnectionTimer"):
 		$ConnectionTimer.start()
@@ -51,6 +100,10 @@ func start_bluetooth_search():
 
 # This function is automatically called when the 10 seconds run out!
 func _on_ConnectionTimer_timeout():
+		# Hide the loading wheel when search completes
+	if loading_wheel:
+		loading_wheel.visible = false
+		
 	# STOP THE TIMER SO IT NEVER FIRES AGAIN!
 	if has_node("ConnectionTimer"):
 		$ConnectionTimer.stop() 
@@ -61,17 +114,42 @@ func _on_ConnectionTimer_timeout():
 		print("Bluetooth Joystick Connected Successfully!")
 	else:
 		if $UILayer/SplashScreen.has_node("ConnectionLabel"):
-			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nUsing Keyboard Controls..."
-		print("Bluetooth Timeout! Falling back to Keyboard controls.")
-
-	# 4. Wait 2 seconds so the user can read the message, then start the game
-	await get_tree().create_timer(2.0).timeout
-	start_game()
-
-func _process(delta):
-	#if not game_active:
-	#	return
+			$UILayer/SplashScreen/ConnectionLabel.text = "Joystick Not Found.\nPress ENTER for Keyboard mode..."
+			print("Bluetooth Timeout! Falling back to Keyboard controls.")
 		
+	# 4. Wait 2 seconds so the user can read the message, then start the game
+	#await get_tree().create_timer(2.0).timeout
+	#start_game()
+	
+func _process(delta):
+		# Rotate the loading wheel if it exists and visible
+	if loading_wheel and loading_wheel.visible:
+		loading_wheel.rotation += rotation_speed * delta
+		
+		# Update the arc positions for animation
+		update_loading_wheel_animation()
+		
+	if waiting_for_input:
+		# Check for ENTER key
+		if Input.is_action_just_pressed("ui_accept") or Input.is_key_pressed(KEY_ENTER):
+			waiting_for_input = false
+			print("Enter pressed! Starting game... Good luck!")
+			
+			# Stop the timer if it exists
+			if has_node("ConnectionTimer") and $ConnectionTimer.is_stopped() == false:
+				$ConnectionTimer.stop()
+			
+			# Start the game
+			start_game()
+		
+		# Check for ESC key
+		elif Input.is_action_just_pressed("ui_cancel") or Input.is_key_pressed(KEY_ESCAPE):
+			print("ESC pressed! Quit game...")
+			get_tree().quit()
+		
+		# Don't process game logic while waiting for input
+		return
+			
 	# Handle game over screen input
 	if not game_active and $UILayer/GameOverScreen.visible:
 		if Input.is_action_just_pressed("restart"):
@@ -94,7 +172,7 @@ func _process(delta):
 			invader_direction = -1 # Bounce left
 			$InvaderContainer.position.y += drop_amount
 			#print("Invader Position Y:",$InvaderContainer.position.y)
-			invader_speed += 5.0
+			invader_speed += 8.0
 			is_at_edge = true 
 			
 	# 3. Check Left Edge (Invaders start at x=50 inside container, so check < 30)
@@ -103,7 +181,7 @@ func _process(delta):
 			invader_direction = 1 # Bounce right
 			$InvaderContainer.position.y += drop_amount
 			#print("Invader Position Y:",$InvaderContainer.position.y)
-			invader_speed += 5.0
+			invader_speed += 8.0
 			is_at_edge = true 
 			
 	# 4. Reset the lock when they move away from the edge
@@ -114,14 +192,24 @@ func _process(delta):
 	if $InvaderContainer.position.y > 500.0: 
 		game_over()
 
+func update_loading_wheel_animation():
+	# Simple rotation is enough for now
+	pass
+	
 func start_game():
+		# Hide loading wheel if it's still visible
+	if loading_wheel:
+		loading_wheel.visible = false
+	
+	waiting_for_input = false
 	$UILayer/SplashScreen.visible = false
+	$Player.visible = true
 	$UILayer/GameOverScreen.visible = false
 	$UILayer/HUD.visible = true
 	
 	game_active = true
 	score = 0
-	invader_speed = 60.0 # Reset speed
+	invader_speed = 100.0 # Reset speed
 	invader_direction = 1
 	invader_count = 36
 	$InvaderContainer.position = Vector2(2, 20) 
