@@ -3,84 +3,111 @@ extends CharacterBody2D
 @export var speed = 300.0
 @export var bullet_scene: PackedScene
 
-# Change cooldown to milliseconds (500ms = 0.5 seconds)
+# Fire cooldown (milliseconds)
 var last_fire_time = 0 
 var fire_cooldown = 500 
 
-# Joystick dead zone (ignore small movements)
-var joystick_deadzone = 0.15  # 15% dead zone
-# Calibrate these values based on your joystick
-# From your logs: resting position is around 0.77 (77%)
-var joystick_center = 0.77  # Adjust this to your joystick's resting position
-var joystick_min = 0.0
-var joystick_max = 1.0
+# Joystick state
+var joystick_direction = 0  # -1 = Left, 0 = Center, 1 = Right
+var joystick_intensity = 0.0  # 0-100%
+var target_x = 0.0  # Smooth movement target
+
+# Keyboard state
+var moving_left = false
+var moving_right = false
+
+# For button press debouncing
+var button_was_pressed = false
 
 func _ready():
 	# Initialize player at bottom center of screen
-	position = Vector2(get_viewport_rect().size.x / 2.0, get_viewport_rect().size.y - 80)
-	print("Player initialized at center: ", position)
-	await get_tree().create_timer(2.0).timeout
-	if GameInput.is_device_connected():
-		calibrate_joystick()
-		
-func calibrate_joystick():
-	# Take 30 samples to find resting position
-	var samples = 0.0
-	for i in range(30):
-		samples += GameInput.get_joystick_x()
-		await get_tree().create_timer(0.033).timeout
-	
-	joystick_center = samples / 30.0
-	print("Joystick calibrated - Center: ", joystick_center)
-	
-func _physics_process(_delta):
-	var direction = 0.0
-
-	# 1. Keyboard Input (Prioritized)
-	if Input.is_action_pressed("move_left"):
-		direction -= 1.0
-	elif Input.is_action_pressed("move_right"):
-		direction += 1.0
-	else:
-		# 2. Joystick Input (Only used if NO keyboard keys are pressed)
-		if GameInput.is_device_connected():
-			# Get joystick X value using the getter function
-			var joy_x = GameInput.get_joystick_x()
-			
-			# Convert to centered value (-0.5 to 0.5 range, then multiply by 2 for -1 to 1)
-			# Since 0.5 is center, values below 0.5 are left, above 0.5 are right
-			var centered_x = (joy_x - 0.5) * 2.0
-			
-			# Apply dead zone (ignore small movements near center)
-			if abs(centered_x) > joystick_deadzone:
-				direction = centered_x
-			else:
-				direction = 0.0
-			
-			# Debug output (uncomment for testing)
-			# if Engine.get_process_frames() % 60 == 0:  # Print once per second
-			# 	print("Joy X: ", joy_x, " Centered: ", centered_x, " Direction: ", direction)
-
-	# 3. Fire Button (Keyboard OR Joystick)
-	var should_fire = GameInput.is_button_pressed() or Input.is_action_just_pressed("fire")
-	if should_fire and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
-		fire_bullet()
-		last_fire_time = Time.get_ticks_msec()
-
-	# Apply movement
-	velocity.x = direction * speed
-	move_and_slide()
-
-	# Keep player within screen bounds
+	var screen_width = get_viewport_rect().size.x
 	var sprite_width = $Sprite2D.texture.get_width() * $Sprite2D.scale.x
 	var half_width = sprite_width / 2.0
+	target_x = clamp(screen_width / 2.0, half_width, screen_width - half_width)
+	position = Vector2(target_x, get_viewport_rect().size.y - 80)
+	print("Player initialized at center: ", position)
+
+func _physics_process(_delta):
+	# 1. Handle keyboard input
+	moving_left = Input.is_action_pressed("move_left")
+	moving_right = Input.is_action_pressed("move_right")
+	
+	# 2. Handle joystick input
+	if GameInput.is_device_connected():
+		var calibrated_x = GameInput.get_calibrated_x()
+		
+		# Update joystick direction and intensity
+		if calibrated_x < -20:
+			joystick_direction = -1
+			joystick_intensity = min(100, abs(calibrated_x))
+		elif calibrated_x > 20:
+			joystick_direction = 1
+			joystick_intensity = min(100, abs(calibrated_x))
+		else:
+			joystick_direction = 0
+			joystick_intensity = 0
+	
+	# 3. Apply movement (keyboard overrides joystick)
+	var move_amount = 0.0
+	
+	if moving_left:
+		move_amount = -speed
+	elif moving_right:
+		move_amount = speed
+	elif joystick_direction != 0:
+		# Scale movement speed based on joystick intensity (20-100%)
+		var intensity_factor = max(0.2, joystick_intensity / 100.0)
+		move_amount = joystick_direction * speed * intensity_factor
+	
+	# Apply movement with speed limit
+	target_x += move_amount * get_physics_process_delta_time()
+	
+	# 4. Keep target within bounds
 	var screen_width = get_viewport_rect().size.x
-	position.x = clamp(position.x, half_width, screen_width - half_width)
+	var sprite_width = $Sprite2D.texture.get_width() * $Sprite2D.scale.x
+	var half_width = sprite_width / 2.0
+	target_x = clamp(target_x, half_width, screen_width - half_width)
+	
+	# 5. Smooth interpolation
+	position.x += (target_x - position.x) * 0.3
+	
+	# 6. Handle shooting (Keyboard SPACEBAR + Joystick button)
+	# Check for keyboard fire action
+	var keyboard_fire = Input.is_action_just_pressed("fire")
+	
+	# Check for joystick button press (edge detection)
+	var joystick_fire = false
+	if GameInput.is_device_connected():
+		var current_button = GameInput.is_button_pressed()
+		# Detect button press (transition from released to pressed)
+		if not button_was_pressed and current_button:
+			joystick_fire = true
+		button_was_pressed = current_button
+	
+	# Fire if either input is triggered
+	if (keyboard_fire or joystick_fire) and Time.get_ticks_msec() - last_fire_time > fire_cooldown:
+		fire_bullet()
+		last_fire_time = Time.get_ticks_msec()
+		
+		# Debug output
+		if keyboard_fire:
+			print("🔫 Keyboard fire!")
+		elif joystick_fire:
+			print("🔫 Joystick fire!")
 
 func fire_bullet():
 	if not bullet_scene:
-		print("❌ ERROR: bullet_scene is not assigned!")
-		return
+		# Try to auto-load the bullet scene
+		if ResourceLoader.exists("res://scenes/Bullet.tscn"):
+			bullet_scene = load("res://scenes/Bullet.tscn")
+			print("✓ Auto-loaded bullet scene")
+		elif ResourceLoader.exists("res://Bullet.tscn"):
+			bullet_scene = load("res://Bullet.tscn")
+			print("✓ Auto-loaded bullet scene")
+		else:
+			print("❌ ERROR: bullet_scene is not assigned and couldn't be auto-loaded!")
+			return
 		
 	var bullet = bullet_scene.instantiate()
 	bullet.position = position + Vector2(0, -30)
@@ -94,4 +121,21 @@ func fire_bullet():
 		if main.has_node("AudioPlayers/ShootPlayer"):
 			main.get_node("AudioPlayers/ShootPlayer").play()
 	else:
-		print("❌ ERROR: BulletContainer not found!")
+		# Fallback: add to parent
+		get_parent().add_child(bullet)
+		print("⚠ Bullet added to parent (BulletContainer not found)")
+
+# Optional: Debug function
+func _input(event):
+	# Press 'D' key to debug joystick state
+	if event is InputEventKey and event.keycode == KEY_D and event.pressed:
+		print("=== Player Debug ===")
+		print("Position: ", position)
+		print("Target X: ", target_x)
+		print("Joystick Direction: ", joystick_direction)
+		print("Joystick Intensity: ", joystick_intensity)
+		print("Moving Left: ", moving_left)
+		print("Moving Right: ", moving_right)
+		print("GameInput Connected: ", GameInput.is_device_connected())
+		if GameInput.is_device_connected():
+			print("Calibrated X: ", GameInput.get_calibrated_x())
