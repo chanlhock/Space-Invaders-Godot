@@ -19,6 +19,11 @@ var update_interval = 0.5
 @onready var calib_label = $CalibLabel
 @onready var packet_label = $PacketLabel
 
+# Joystick position bar variables
+var joystick_bar = null
+var joystick_indicator = null
+var joystick_center_line = null
+
 func _ready():
 	# Initialize FPS tracking
 	last_fps_update = Time.get_ticks_msec() / 1000.0
@@ -68,9 +73,32 @@ func _ready():
 		add_child(packet_label)
 		packet_label.add_theme_font_size_override("font_size", 12)
 	
+	# Create joystick position bar
+	create_joystick_bar()
+	
 	# Position all labels
 	await get_tree().process_frame
 	position_labels()
+
+func create_joystick_bar():
+	"""Create the visual joystick position bar"""
+	# Create container for the bar
+	joystick_bar = ColorRect.new()
+	joystick_bar.name = "JoystickBar"
+	joystick_bar.color = Color(0.2, 0.2, 0.2)  # Dark gray background
+	add_child(joystick_bar)
+	
+	# Create indicator (the position marker)
+	joystick_indicator = ColorRect.new()
+	joystick_indicator.name = "JoystickIndicator"
+	joystick_indicator.color = Color.YELLOW
+	joystick_bar.add_child(joystick_indicator)
+	
+	# Create center line
+	joystick_center_line = ColorRect.new()
+	joystick_center_line.name = "CenterLine"
+	joystick_center_line.color = Color.WHITE
+	joystick_bar.add_child(joystick_center_line)
 
 func position_labels():
 	"""Position all labels properly"""
@@ -81,7 +109,7 @@ func position_labels():
 	if fps_label:
 		fps_label.position = Vector2(screen_width - 100, 2)
 	
-	# WiFi status at top-left
+	# WiFi status at bottom-left area
 	if wifi_status_label:
 		wifi_status_label.position = Vector2(8, screen_height - 145)
 	
@@ -92,14 +120,55 @@ func position_labels():
 	# Calibration label below raw data
 	if calib_label:
 		calib_label.position = Vector2(8, screen_height - 105)
+	
+	# Position joystick bar below calibration label
+	if joystick_bar:
+		var bar_width = 200
+		var bar_height = 15
+		var bar_x = 8
+		var bar_y = screen_height - 76
+		joystick_bar.position = Vector2(bar_x, bar_y)
+		joystick_bar.size = Vector2(bar_width, bar_height)
 		
-	# Button status label below calibration data
+		# Position center line
+		if joystick_center_line:
+			joystick_center_line.position = Vector2(bar_width / 2 - 1, -2)
+			joystick_center_line.size = Vector2(2, bar_height + 4)
+	
+	# Button status label below joystick bar
 	if button_status_label:
 		button_status_label.position = Vector2(8, screen_height - 56)
-		
+	
 	# Packet label below button status
 	if packet_label:
 		packet_label.position = Vector2(8, screen_height - 37)
+
+func update_joystick_bar(calibrated_x: float):
+	"""Update the joystick position bar based on calibrated value (-100 to 100)"""
+	if not joystick_bar or not joystick_indicator:
+		return
+	
+	var bar_width = joystick_bar.size.x
+	var bar_height = joystick_bar.size.y
+	
+	# Calculate position (-100 to 100 -> 0 to bar_width)
+	# calibrated_x: -100 = left, 0 = center, 100 = right
+	var pos = int(((calibrated_x + 100) / 200) * bar_width)
+	pos = clamp(pos, 0, bar_width)
+	
+	# Set indicator color based on intensity
+	var indicator_color = Color.YELLOW
+	if abs(calibrated_x) > 50:
+		indicator_color = Color.RED
+	elif abs(calibrated_x) > 20:
+		indicator_color = Color.ORANGE
+	else:
+		indicator_color = Color.YELLOW
+	
+	# Update indicator position and color
+	joystick_indicator.position = Vector2(pos - 2, -2)
+	joystick_indicator.size = Vector2(4, bar_height + 4)
+	joystick_indicator.color = indicator_color
 
 func _process(delta):
 	var current_time = Time.get_ticks_msec() / 1000.0
@@ -173,7 +242,7 @@ func update_joystick_display():
 			wifi_status_label.text = "WiFi: NO DATA"
 			wifi_status_label.add_theme_color_override("font_color", Color.RED)
 	
-	# Update raw data label - FIXED: Display raw int values (0-65535)
+	# Update raw data label
 	if raw_data_label:
 		if is_connected:
 			# Convert raw values (0-1 range) back to 0-65535 range for display
@@ -185,23 +254,10 @@ func update_joystick_display():
 		else:
 			raw_data_label.text = "Raw X: 32768 Y: 32768"
 	
-	# Update button status label
-	if button_status_label:
-		if is_connected:
-			if button_pressed:
-				button_status_label.text = "Button: PRESSED"
-				button_status_label.add_theme_color_override("font_color", Color.YELLOW)
-			else:
-				button_status_label.text = "Button: RELEASED"
-				button_status_label.add_theme_color_override("font_color", Color.WHITE)
-		else:
-			button_status_label.text = "Button: RELEASED"
-	
 	# Update calibration label
 	if calib_label:
 		if is_connected:
 			# Show calibrated value (-100 to 100 range)
-			var calib_percent = int(abs(calibrated_x))
 			var direction = ""
 			if calibrated_x < -10:
 				direction = "LEFT"
@@ -214,14 +270,33 @@ func update_joystick_display():
 			
 			# Color based on intensity
 			if abs(calibrated_x) > 50:
-				calib_label.add_theme_color_override("font_color", Color.ORANGE)
+				calib_label.add_theme_color_override("font_color", Color.RED)
 			elif abs(calibrated_x) > 20:
-				calib_label.add_theme_color_override("font_color", Color.YELLOW)
+				calib_label.add_theme_color_override("font_color", Color.ORANGE)
 			else:
 				calib_label.add_theme_color_override("font_color", Color.WHITE)
 		else:
 			calib_label.text = "Calib: +0.0%"
 			calib_label.add_theme_color_override("font_color", Color.WHITE)
+	
+	# Update joystick position bar
+	if is_connected:
+		update_joystick_bar(calibrated_x)
+	elif joystick_indicator:
+		# Reset to center when disconnected
+		update_joystick_bar(0)
+	
+	# Update button status label
+	if button_status_label:
+		if is_connected:
+			if button_pressed:
+				button_status_label.text = "Button: PRESSED"
+				button_status_label.add_theme_color_override("font_color", Color.YELLOW)
+			else:
+				button_status_label.text = "Button: RELEASED"
+				button_status_label.add_theme_color_override("font_color", Color.WHITE)
+		else:
+			button_status_label.text = "Button: RELEASED"
 	
 	# Update packet label
 	if packet_label:
