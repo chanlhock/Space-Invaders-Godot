@@ -32,7 +32,9 @@ The program runs on Raspberry Pi Pico W (WiFi Joystick) and Raspberry Pi 5 with 
 Program code is generated for Godot 4 using GDScript. \
 I started prompt coding in the morning of 11th June 2026. \
 It took me quite a few days to complete this.\
-Qwen3.7-plus generated the Godot code but it has quite a number of major bugs and missing features I wanted. Ended up I have to debug using DeepSeek as Qwen3.7-plus was unable to fix its own bug. \
+Qwen3.7-plus generated the Godot code but it has quite \
+a number of major bugs and missing features I wanted. \
+Ended up I have to debug using DeepSeek as Qwen3.7-plus was unable to fix its own bug. \
 I have tested on Raspberry Pi Pico W and Raspberry Pi 5 with Godot 4.
 
 On the Raspberry Pi Pico W:
