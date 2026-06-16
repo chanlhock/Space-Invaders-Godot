@@ -141,7 +141,7 @@ I have tested my code on:
 
 ## :hourglass_flowing_sand: Chronology of Development Events
 - 11th June 2026: Installation for Godot 4 was very easy on Raspberry Pi 5 using Pi Apps. Started prompt codng of Godot 4 codes using Qwen3.7-plus AI.
-- 14th June 2026: Used Qwen3.7-plus to generate the game to run on Godot game engine. The code didn't work first time right, to certain extent it has a lot of bugs and missing features. I Prompted it to fix the bugs but got some bugs after many prompts still unable to fix. Used Github Claude instead to prompt it to fix the bug, voila Github Claude was able to do so. I find that Qwen3.7-plus is not as good as DeepSeek that I used previously to generate the same game in Pygame. Qwen3.7-plus needs another AI to find out itd bugs, it is unable to fix its own shit (bugs). 
+- 14th June 2026: Used Qwen3.7-plus to generate the game to run on Godot game engine. The code didn't work first time right, to certain extent it has a lot of bugs and missing features. Prompted it to fix the bugs but there are some bugs after many prompts still unable to fix. Used Github Claude instead to prompt it to fix the bug, voila Github Claude was able to do so. I find that Qwen3.7-plus is not as good as DeepSeek that I used previously to generate the same game in Pygame. Qwen3.7-plus needs another AI to find out itd bugs, it is unable to fix its own shit (bugs). Subsequently I used DeepSeek to fix all the bugs including converting the Pi Pico W existing Bluetooth Joystick code to WiFi UDP communication.
 - 15th June 2026: Continue to fix bugs using DeepSeek. Finally completed the Space Invader game on Godot!
 
 ## :coffee: Buy Me a Coffee
