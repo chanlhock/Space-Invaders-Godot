@@ -79,16 +79,16 @@ Press Ctrl+C to stop
 [30] X= 77% (50780), Y= 77% (50844), Button=Released
 [35] X= 77% (50796), Y= 77% (50796), Button=Released
 [40] X= 77% (50796), Y= 77% (50828), Button=Released
-[220] X= 77% (50700), Y= 84% (55309), Button=Released
-[225] X= 77% (50764), Y= 77% (50924), Button=Pressed
-[230] X= 77% (50780), Y= 77% (51020), Button=Pressed
-[235] X= 77% (50764), Y= 77% (50860), Button=Pressed
-[240] X= 28% (18372), Y= 77% (50732), Button=Released
-[245] X= 77% (50796), Y= 80% (52844), Button=Released
-[250] X= 77% (50892), Y=100% (65535), Button=Pressed
-[255] X= 77% (50764), Y= 78% (51260), Button=Released
-[260] X= 77% (50764), Y= 77% (50956), Button=Released
-[265] X= 77% (50716), Y= 81% (53277), Button=Pressed
+[45] X= 77% (50700), Y= 84% (55309), Button=Released
+[50] X= 77% (50764), Y= 77% (50924), Button=Pressed
+[55] X= 77% (50780), Y= 77% (51020), Button=Pressed
+[60] X= 77% (50764), Y= 77% (50860), Button=Pressed
+[65] X= 28% (18372), Y= 77% (50732), Button=Released
+[70] X= 77% (50796), Y= 80% (52844), Button=Released
+[75] X= 77% (50892), Y=100% (65535), Button=Pressed
+[80] X= 77% (50764), Y= 78% (51260), Button=Released
+[85] X= 77% (50764), Y= 77% (50956), Button=Released
+[90] X= 77% (50716), Y= 81% (53277), Button=Pressed
 ~~~~
 6. Raspberry Pi Pico W is now ready and transmitting the Joystick movement data to Raspberry Pi 5. 
 
