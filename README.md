@@ -43,35 +43,33 @@ On the Raspberry Pi Pico W:
 
 Note: You can rename Pico_W_Joystick_WiFi_Godot.py to main.py so that the program will automatically run when Raspberry Pi Pico W power up.
 ~~~~
-MPY: soft reboot
-Initializing BLE...
-Registering services...
-Service registered, handle: 9
-Advertising as 'Joystick_Pico'
+>>> %Run -c $EDITOR_CONTENT
 
-========================================
-PICO W READY - Move the joystick!
-========================================
+MPY: soft reboot
+
+==================================================
+PICO W JOYSTICK - DIRECT TO GODOT
+==================================================
+Connecting to WiFi: chanhome 2.4GHz
+Connecting... 14s left
+Connecting... 13s left
+Connecting... 12s left
+Connecting... 11s left
+✓ WiFi connected! IP: 192.168.0.19
+✓ UDP socket created
+Sending directly to Godot at 192.168.0.23:9000
+
+✓ Ready! Sending joystick data directly to Godot...
 Press Ctrl+C to stop
 
-Local: X=50444 ( 76%), Y=50428 ( 76%), Button=Released
-Local: X=50476 ( 77%), Y=50636 ( 77%), Button=Released
-Local: X=50620 ( 77%), Y=50844 ( 77%), Button=Released
-Local: X=  304 (  0%), Y=60590 ( 92%), Button=Released
-Local: X=50364 ( 76%), Y=50524 ( 77%), Button=Released
-Local: X=65535 (100%), Y=65535 (100%), Button=Released
-Local: X=65535 (100%), Y=65535 (100%), Button=Released
-Local: X=50508 ( 77%), Y=23861 ( 36%), Button=Released
-Local: X=57838 ( 88%), Y=50492 ( 77%), Button=Released
-Local: X=65535 (100%), Y=65535 (100%), Button=Released
-Local: X=65535 (100%), Y=64671 ( 98%), Button=Released
-Local: X=50364 ( 76%), Y=50524 ( 77%), Button=Released
-Local: X=50476 ( 77%), Y=50476 ( 77%), Button=Released
-Local: X=50508 ( 77%), Y=50460 ( 76%), Button=Released
-Local: X=50268 ( 76%), Y=50572 ( 77%), Button=Released
-Local: X=50380 ( 76%), Y=50540 ( 77%), Button=Released
-Local: X=50284 ( 76%), Y=50524 ( 77%), Button=Released
-
+[5] X= 77% (50844), Y= 77% (50860), Button=Released
+[10] X= 77% (50812), Y= 77% (50844), Button=Released
+[15] X= 77% (50764), Y= 77% (50876), Button=Released
+[20] X= 77% (50860), Y= 77% (50844), Button=Released
+[25] X= 77% (50844), Y= 77% (50876), Button=Released
+[30] X= 77% (50780), Y= 77% (50844), Button=Released
+[35] X= 77% (50796), Y= 77% (50796), Button=Released
+[40] X= 77% (50796), Y= 77% (50828), Button=Released
 ~~~~
 6. Raspberry Pi Pico W is now ready and transmitting the Joystick movement data to Raspberry Pi 5. 
 
