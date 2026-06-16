@@ -31,13 +31,14 @@ The program runs on Raspberry Pi Pico W (WiFi Joystick) and Raspberry Pi 5 with 
 ## :computer: Development Platform
 Program code is generated for Godot 4 using GDScript. \
 I started prompt coding in the morning of 11th June 2026. \
-It took me quite a long time to complete this.\
+It took me quite a few days to complete this.\
+Qwen3.7-plus generated the Godot code but it has quite a number of major bugs and missing features I wanted. Ended up I have to debug using DeepSeek as Qwen3.7-plus was unable to fix its own bug. \
 I have tested on Raspberry Pi Pico W and Raspberry Pi 5 with Godot 4.
 
 On the Raspberry Pi Pico W:
 1. Do ensure that the Raspberry Pi Pico W is flashed with the correct *.uf2 file
-2. The RPI_PICO_W-20251209-v1.27.0.uf2 file can be downloaded from DeepSeek folder in this repository.
-3. Open Thonny and upload all the files in the repository folder /Pi Pico W Joystick Godot onto Raspberry Pi Pico W. Program is using MicroPython.
+2. The RPI_PICO_W-20251209-v1.27.0.uf2 file can be downloaded from resource/Pi Pico W Joystick Godot/ folder in this repository.
+3. Open Thonny and upload all the files in the repository folder resource/Pi Pico W Joystick Godot/ onto Raspberry Pi Pico W. Program is using MicroPython.
 4. Open the file Pico_W_Joystick_WiFi_Godot.py
 5. Run Pico_W_Joystick_WiFi_Godot.py. The following output will be displayed in the Thonny run window.
 
