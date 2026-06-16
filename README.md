@@ -2,7 +2,7 @@
 # :mouse: Welcome to Space Invaders Godot with Pi Pico W WiFi Joystick 
 
 <p align="center">
- <img src="resource/space-invaders-godot-logo.png" width="200">
+ <img src="resource/space-invaders-godot-logo.png" width="300">
 </p>
 
 <p align="center">
