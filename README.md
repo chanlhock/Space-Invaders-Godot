@@ -117,7 +117,8 @@ Attached are also the screen shots for the splash startup screen,
 main game screen and game end screen.
 
 Can you let me know the steps to create the Godot project and 
-how to setup the code, sprite, sound, etc since I am not familiar with Godot 4 interface.
+how to setup the code, sprite, sound, etc since I am not 
+familiar with Godot 4 interface.
 ~~~~
 Sprite image and sound file obtained from this webside:
 (https://joecode22.itch.io/space-invaders)
