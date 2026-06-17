@@ -129,14 +129,33 @@ I have tested my code on:
 - Raspberry Pi Pico W together with Raspberry Pi 5 running Godot 4.
 
 ## :film_strip: Screenshots
+Splashscreen searching for joystick:
 <p float="left">
-  <img src="resource/space_invaders_spash_screen.png" width="600" />
+  <img src="resource/screenshots/splash-screen-searching-for-joystick.png" width="600" />
 </p>
+Splashscreen joystick found: 
 <p float="left">
-  <img src="resource/space_invaders_live_screen.png" width="600" /> 
+  <img src="resource/screenshots/splash-screen-joystick-found.png" width="600" /> 
 </p>
+Splashscreen joystick not found, switch to keyboard mode: 
 <p float="left">
-  <img src="resource/space_invaders_game_over.png" width="600" /> 
+  <img src="resource/screenshots/splash-screen-joystick-not-found.png" width="600" /> 
+</p>
+Game screen player firing at invaders:
+<p float="left">
+  <img src="resource/screenshots/game-screen-player-fired.png" width="600" /> 
+</p>
+Game screen player fired nnd moved:
+<p float="left">
+  <img src="resource/screenshots/game-screen-player-moved-and-fired.png" width="600" /> 
+</p>
+Game over screen, player loss:
+<p float="left">
+  <img src="resource/screenshots/game-over-screen.png" width="600" /> 
+</p>
+Player win game screen:
+<p float="left">
+  <img src="resource/screenshots/player-win-game-screen.png" width="600" /> 
 </p>
 
 ## :hourglass_flowing_sand: Chronology of Development Events
